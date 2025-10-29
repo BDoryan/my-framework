@@ -3,16 +3,23 @@
 namespace MyFramework;
 
 use MyFramework\Logger\Logger;
+use MyFramework\Router\Router;
 
 class MyFramework
 {
 
     public static Logger $logger;
+    public static Router $router;
 
     public static function initialize(): void
     {
         self::loadEnvironmentVariables();
         self::initializeLogger();
+    }
+
+    private static function intializeRouter(): void
+    {
+        self::$router = new Router();
     }
 
     private static function initializeLogger(): void
