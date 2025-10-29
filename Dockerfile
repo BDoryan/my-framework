@@ -12,8 +12,11 @@ RUN a2enmod rewrite headers
 
 # Switch Apache to listen on port 8080 inside the container
 RUN set -eux; \
-    sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf; \
-    sed -i 's/:80>/:8080>/' /etc/apache2/sites-available/000-default.conf
+    sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf
+
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+
+COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
 

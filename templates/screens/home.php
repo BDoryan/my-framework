@@ -1,6 +1,6 @@
 
-<div class="bg-secondary min-vh-100 d-flex flex-column justify-content-center align-items-center text-white">
-    <h2 class="display-2">Page d’accueilaa</h2>
+<div class="bg-success min-vh-100 d-flex flex-column justify-content-center align-items-center text-white">
+    <h2 class="display-2">Page d’accueil</h2>
     <p>Bienvenue sur la page d’accueil !</p>
     <p>Clique sur “Profil” dans le menu pour charger une autre page sans rechargement complet.</p>
 </div>
@@ -9,6 +9,3 @@
         Second pane
     </h1>
 </div>
-<script>
-    alert('Bienvenue sur la page d’accueil !');
-</script>

@@ -1,3 +1,4 @@
+console.log('[Fast Refresh] Initializing fast refresh...');
 const DEFAULT_RELOAD_ENDPOINT = '/__dev/fast-refresh.php';
 const DEFAULT_POLL_INTERVAL = 2000;
 

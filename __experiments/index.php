@@ -17,8 +17,8 @@
 <h1>Démo : Navigation sans rechargement</h1>
 
 <div id="menu">
-    <a href="../templates/pages/accueil.php">Accueil</a>
-    <a href="../templates/pages/profil.php">Profil</a>
+    <a href="../templates/screens/accueil.php">Accueil</a>
+    <a href="../templates/screens/profil.php">Profil</a>
 </div>
 
 <div id="content">
