@@ -1,0 +1,16 @@
+{
+    "name": "doryanbessiere/my-framework",
+    "description": "A simple framework created for fun.",
+    "autoload": {
+        "psr-4": {
+            "MyFramework\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Doryan BESSIERE",
+            "email": "doryanbessiere.pro@gmail.com"
+        }
+    ],
+    "require": {}
+}

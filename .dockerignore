@@ -1,0 +1,6 @@
+.git
+.gitignore
+test/
+node_modules/
+vendor/
+docker-compose.yml
