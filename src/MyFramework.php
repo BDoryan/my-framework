@@ -2,6 +2,8 @@
 
 namespace MyFramework;
 
+use MyFramework\Component\Component;
+use MyFramework\Error\ErrorHandler;
 use MyFramework\Logger\Logger;
 use MyFramework\Router\Router;
 use MyFramework\Template\Template;
@@ -20,11 +22,19 @@ class MyFramework
         self::$router = new Router();
         Template::setRootPath(__DIR__ . '/../templates');
 
+        Component::registerComponents(__DIR__ . '/../templates/components');
+
         self::initializeLogger();
+        self::loadErrorHandlers();
         self::loadEnvironmentVariables();
         self::loadControllersRoutes();
 
         self::$router->dispatch();
+    }
+
+    private static function loadErrorHandlers(): void
+    {
+        ErrorHandler::register();
     }
 
     private static function loadControllersRoutes(): void

@@ -1,6 +1,7 @@
 <?php
 
 use MyFramework\Component\Component;
+use MyFramework\Component\ComponentRenderer;
 use MyFramework\Template\Template;
 
 /**
@@ -75,7 +76,20 @@ function json_to_html_attribute_value(array $data): string
     return htmlspecialchars(json_encode($data), ENT_QUOTES);
 }
 
+/**
+ * Render components within the given HTML string.
+ *
+ * @param string $html
+ * @param int $depth
+ * @return string
+ */
+function render_components(string $html, int $depth = 0): string
+{
+    return ComponentRenderer::renderComponents($html, $depth);
+}
+
 // TODO: Temporary function for backward compatibility
+/*
 function render_components($html, $depth = 0)
 {
     static $loaded_components = [];
@@ -87,23 +101,25 @@ function render_components($html, $depth = 0)
     }
 
     $pattern = '/<([a-z0-9-]+)([^>]*)>(.*?)<\/\1>/is';
-    $has_component = false;
 
-    $html = preg_replace_callback($pattern, function ($matches) use (&$loaded_components, &$collected_scripts, &$collected_styles, &$has_component, $depth) {
+    // Use preg_replace_callback to process each component tag
+    $html = preg_replace_callback($pattern, function ($matches) use (&$loaded_components, &$collected_scripts, &$collected_styles, $depth) {
         $tag = $matches[1];
 
+        // Get attributes and inner content
         $attributes = $matches[2];
+
+        // Trim inner content to avoid unnecessary spaces
         $innerContent = $matches[3];
 
-        $render_path = __DIR__ . "/../templates/components/{$tag}.php";
-
         // If component file does not exist, return original HTML
-        if (!file_exists($render_path)) {
+        if(!Component::hasComponent($tag)) {
             $innerContent = render_components($innerContent, $depth + 1);
             return "<{$tag}{$attributes}>{$innerContent}</{$tag}>";
         }
 
-        $has_component = true;
+        // Load the component
+        $component = Component::getComponentByTag($tag);
 
         // Convert attributes to props
         preg_match_all('/(\w+)="([^"]*)"/', $attributes, $attrMatches, PREG_SET_ORDER);
@@ -112,9 +128,6 @@ function render_components($html, $depth = 0)
             $props[$attr[1]] = $attr[2];
         }
         $props['children'] = trim($innerContent);
-
-        // Load the component
-        $component = Component::loadComponent($render_path);
 
         // Render the component
         $rendered = $component->render($props);
@@ -138,12 +151,10 @@ function render_components($html, $depth = 0)
         // Return only the inner content for server-side components
         if ($component->isServerSide())
             return $rendered_clean;
+
+        // For client-side components, return the full tag with attributes (scripts and styles will be appended later)
         return "<{$tag}{$attributes}>{$rendered_clean}</{$tag}>";
     }, $html);
-
-//    if ($has_component) {
-//        $html = render_components($html, $depth + 1);
-//    }
 
     // At the top level, append collected scripts and styles
     if ($depth === 0) {
@@ -154,5 +165,5 @@ function render_components($html, $depth = 0)
     }
 
     return $html;
-}
+}*/
 

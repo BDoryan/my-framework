@@ -63,11 +63,39 @@ class Component implements Renderer
         return $this->props[$key] ?? $default;
     }
 
+    public function getProps(): array
+    {
+        return $this->props;
+    }
+
+    public function getTag(): string
+    {
+        return $this->tag;
+    }
+
     public function render(array $data = []): string
     {
         $pos = strpos($this->file_path, '/components/') + 12;
         $path = '/components/' . substr($this->file_path, $pos);
         return Template::loadTemplate($path, $data);
+    }
+
+    public static array $components = [];
+
+    public static function registerComponents(string $directory): void
+    {
+        $files = glob($directory . '/*');
+        $files = array_filter($files, function($file) {
+            return is_dir($file) || pathinfo($file, PATHINFO_EXTENSION) === 'php';
+        });
+        foreach ($files as $file) {
+            if(is_dir($file)) {
+                self::registerComponents($file);
+                continue;
+            }
+            $component = self::loadComponent($file);
+            self::$components[$component->getTag()] = $component;
+        }
     }
 
     public static function make(string $file_path, string $type, array $props = []): self
@@ -77,7 +105,20 @@ class Component implements Renderer
 
     public static function default($file_path): self
     {
-        return new self($file_path, self::TYPE_SERVER_SIDE, []);
+        return new self($file_path, self::TYPE_CLIENT_SIDE, []);
+    }
+
+    public static function getComponentByTag(string $tag): ?self
+    {
+        if(!self::hasComponent($tag))
+            throw new \RuntimeException("Component not registered: " . $tag);
+
+        return self::$components[$tag] ?? null;
+    }
+
+    public static function hasComponent(string $tag): ?bool
+    {
+        return isset(self::$components[$tag]);
     }
 
     public static function loadComponent($file_path): self
