@@ -11,5 +11,8 @@
             "name": "Doryan BESSIERE",
             "email": "doryanbessiere.pro@gmail.com"
         }
-    ]
+    ],
+  "require": {
+    "ext-json": "*"
+  }
 }

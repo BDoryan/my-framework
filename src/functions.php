@@ -58,6 +58,17 @@ function dd($data): void {
     die();
 }
 
+/**
+ * This method transform array data to json string for attribute html value
+ *
+ * @param array $data
+ * @return string
+ */
+function json_to_html_attribute_value(array $data): string
+{
+    return htmlspecialchars(json_encode($data), ENT_QUOTES);
+}
+
 // TODO: Temporary function for backward compatibility
 function render_components($html, $depth = 0)
 {

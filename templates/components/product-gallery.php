@@ -2,13 +2,32 @@
 $title = htmlspecialchars($props['title'] ?? 'Galerie de produits');
 $categoryFilter = htmlspecialchars($props['category'] ?? 'all');
 ?>
-
 <script defer>
     if (!customElements.get("product-gallery")) {
         class ProductGallery extends HTMLElement {
             connectedCallback() {
-                this.products = this.loadProducts();
-                this.render();
+                // Lecture des attributs
+                this.title = this.getAttribute("title") || "Galerie de produits";
+                this.categoryFilter = this.getAttribute("category") || "all";
+                this.products = this.parseProductsAttribute(this.getAttribute("products"));
+
+                // Construction du DOM
+                this.innerHTML = `
+        <div class="product-gallery">
+          <header>
+            <h3>${this.title}</h3>
+            <select class="category-filter">
+              <option value="all">Toutes les catégories</option>
+              <option value="vetement">Vêtements</option>
+              <option value="accessoire">Accessoires</option>
+              <option value="chaussure">Chaussures</option>
+            </select>
+          </header>
+          <div class="product-grid"></div>
+        </div>
+      `;
+
+                this.render(this.categoryFilter);
 
                 // Écoute du filtre
                 this.querySelector(".category-filter").addEventListener("change", e => {
@@ -16,15 +35,13 @@ $categoryFilter = htmlspecialchars($props['category'] ?? 'all');
                 });
             }
 
-            loadProducts() {
-                // Données fictives
-                return [
-                    { id: 1, name: "T-shirt noir", category: "vetement", price: 25, img: "https://picsum.photos/200?1" },
-                    { id: 2, name: "Sweat gris", category: "vetement", price: 45, img: "https://picsum.photos/200?2" },
-                    { id: 3, name: "Casquette", category: "accessoire", price: 15, img: "https://picsum.photos/200?3" },
-                    { id: 4, name: "Sac à dos", category: "accessoire", price: 60, img: "https://picsum.photos/200?4" },
-                    { id: 5, name: "Sneakers", category: "chaussure", price: 80, img: "https://picsum.photos/200?5" },
-                ];
+            parseProductsAttribute(value) {
+                try {
+                    return JSON.parse(value) || [];
+                } catch (e) {
+                    console.warn("Produit(s) invalide(s) dans l'attribut 'products' :", e);
+                    return [];
+                }
             }
 
             render(filter = "all") {
@@ -78,6 +95,7 @@ $categoryFilter = htmlspecialchars($props['category'] ?? 'all');
         customElements.define("product-card", ProductCard);
     }
 </script>
+
 
 <style>
     .product-gallery {
