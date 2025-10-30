@@ -57,11 +57,11 @@ class Screen implements Renderer
 
     public function render(): string
     {
-        return Template::loadTemplate('/partials/body', [
+        return render_components(Template::loadTemplate('/partials/body', [
             'top_body' => RendererUtils::renders($this->top_renderers),
             'content' => Template::loadTemplate($this->path),
             'bottom_body' => RendererUtils::renders($this->bottom_renderers),
-        ]);
+        ]));
     }
 
     public static function create(string $path): self

@@ -10,6 +10,7 @@ $is_active = function (string $path): bool {
 $links = [
         ['label' => 'Accueil', 'path' => '/'],
         ['label' => 'Profil', 'path' => '/profile'],
+        ['label' => 'Test de composants', 'path' => '/test_component'],
 ];
 ?>
 
