@@ -71,7 +71,19 @@ class Page extends Screen implements Renderer
         return $this;
     }
 
-    public function render(): string
+    public function toTopBody(): string
+    {
+        $header = Template::loadTemplate('/partials/header');
+        return parent::toTopBody() . $header;
+    }
+
+    public function toBottomBody(): string
+    {
+        $footer = Template::loadTemplate('/partials/footer');
+        return $footer . parent::toBottomBody();
+    }
+
+    public function render(array $data = []): string
     {
         // Add default framework scripts
         $this->addHeadRenderer(Script::make()
@@ -80,20 +92,16 @@ class Page extends Screen implements Renderer
             ->type('module'));
 
         // Add development tools script in development mode
-        if(MyFramework::isDevelopmentMode()) {
+        if (MyFramework::isDevelopmentMode()) {
             $this->addHeadRenderer(Script::make()
                 ->src('/resources/js/__dev/dev-tools.js')
                 ->type('module'));
         }
 
-        // Load header and footer templates
-        $header = Template::loadTemplate('/partials/header');
-        $footer = Template::loadTemplate('/partials/footer');
-
         // Combine header, content, and footer
-        $content = $header . parent::render() . $footer;
+        $content = parent::render();
 
-        if(($_GET['_ajax'] ?? '') == 1) {
+        if (($_GET['_ajax'] ?? '') == 1) {
             return $content;
         }
 

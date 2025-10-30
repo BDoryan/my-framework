@@ -29,8 +29,9 @@ $links = [
                 <?php foreach ($links as $link) {
                     $active_class = $is_active($link['path']) ? ' active' : ''; ?>
                     <li class="nav-item">
-                        <a data-use-framework class="<?= merge_classes('nav-link', $active_class) ?>"
-                           href="<?= htmlspecialchars($link['path']) ?>"><?= htmlspecialchars($link['label']) ?></a>
+                        <router-link href="<?=  htmlspecialchars($link['path'])  ?>" class="<?= merge_classes('nav-link', $active_class) ?>">
+                            <?= htmlspecialchars($link['label'])  ?>
+                        </router-link>
                     </li>
                 <?php } ?>
             </ul>

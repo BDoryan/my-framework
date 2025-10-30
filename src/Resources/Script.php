@@ -83,7 +83,7 @@ class Script implements Renderer
         return $this;
     }
 
-    public function render(): string
+    public function render(array $data = []): string
     {
         return Template::loadTemplate('/partials/resources/script', [
             'type' => $this->type,

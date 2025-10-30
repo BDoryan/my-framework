@@ -55,12 +55,20 @@ class Screen implements Renderer
         return $this->path;
     }
 
-    public function render(): string
+    public function toTopBody(): string {
+        return RendererUtils::renders($this->top_renderers);
+    }
+
+    public function toBottomBody(): string {
+        return RendererUtils::renders($this->bottom_renderers);
+    }
+
+    public function render(array $data = []): string
     {
         return render_components(Template::loadTemplate('/partials/body', [
-            'top_body' => RendererUtils::renders($this->top_renderers),
+            'top_body' => $this->toTopBody(),
             'content' => Template::loadTemplate($this->path),
-            'bottom_body' => RendererUtils::renders($this->bottom_renderers),
+            'bottom_body' => $this->toBottomBody(),
         ]));
     }
 
