@@ -11,9 +11,9 @@ class Screen implements Renderer
 
     private string $path;
 
-    public function __construct(string $path)
+    public function __construct(string $screen_path)
     {
-        $this->path = $path;
+        $this->path = '/screens/' . preg_replace('#^/screens/#', '', $screen_path);
     }
 
     /**

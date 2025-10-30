@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 // Define default values for optional variables
-use MyFramework\Renderer\Renderer;
 use MyFramework\Renderer\RendererUtils;
 use MyFramework\Resources\Link;
 use MyFramework\Resources\Script;

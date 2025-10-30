@@ -4,6 +4,10 @@ namespace MyFramework;
 
 use MyFramework\Logger\Logger;
 use MyFramework\Router\Router;
+use MyFramework\Template\Template;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use ReflectionClass;
 
 class MyFramework
 {
@@ -13,13 +17,35 @@ class MyFramework
 
     public static function initialize(): void
     {
-        self::loadEnvironmentVariables();
+        self::$router = new Router();
+        Template::setRootPath(__DIR__ . '/../templates');
+
         self::initializeLogger();
+        self::loadEnvironmentVariables();
+        self::loadControllersRoutes();
+
+        self::$router->dispatch();
     }
 
-    private static function intializeRouter(): void
+    private static function loadControllersRoutes(): void
     {
-        self::$router = new Router();
+        $root_dirs = [
+            __DIR__,
+        ];
+
+        foreach (get_declared_classes() as $className) {
+            if (is_subclass_of($className, 'MyFramework\Controller\Controller')) {
+                $ref = new ReflectionClass($className);
+                if ($ref->isAbstract()) continue;
+
+                if ($ref->hasMethod('routes')) {
+                    $method = $ref->getMethod('routes');
+                    if ($method->isStatic() && $method->isPublic()) {
+                        $className::routes(self::$router);
+                    }
+                }
+            }
+        }
     }
 
     private static function initializeLogger(): void

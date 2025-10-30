@@ -2,8 +2,11 @@
 
 namespace MyFramework\Renderer\Page;
 
+use MyFramework\MyFramework;
 use MyFramework\Renderer\Renderer;
+use MyFramework\Renderer\RendererUtils;
 use MyFramework\Renderer\Screen\Screen;
+use MyFramework\Resources\Script;
 use MyFramework\Template\Template;
 
 class Page extends Screen implements Renderer
@@ -16,12 +19,12 @@ class Page extends Screen implements Renderer
     private string $author = 'Unknown';
     private string $content = '';
 
-    /** @var Renderer[] $head_renders */
-    private array $head_renders = [];
+    /** @var Renderer[] $head_renderers */
+    private array $head_renderers = [];
 
-    public function __construct(string $path, string $lang = 'en', string $title = 'Untitled', string $description = 'No description available.', array $keywords = [], string $author = 'Unknown', string $content = '')
+    public function __construct(string $screen_path, string $lang = 'en', string $title = 'Untitled', string $description = 'No description available.', array $keywords = [], string $author = 'Unknown', string $content = '')
     {
-        parent::__construct($path);
+        parent::__construct($screen_path);
         $this->lang = $lang;
         $this->title = $title;
         $this->description = $description;
@@ -30,9 +33,33 @@ class Page extends Screen implements Renderer
         $this->content = $content;
     }
 
+    public function title(string $title): self
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    public function description(string $description): self
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function keywords(array $keywords): self
+    {
+        $this->keywords = $keywords;
+        return $this;
+    }
+
+    public function author(string $author): self
+    {
+        $this->author = $author;
+        return $this;
+    }
+
     public function addHeadRenderer(Renderer $renderer): self
     {
-        $this->head_renders[] = $renderer;
+        $this->head_renderers[] = $renderer;
         return $this;
     }
 
@@ -46,15 +73,36 @@ class Page extends Screen implements Renderer
 
     public function render(): string
     {
+        // Add default framework scripts
+        $this->addHeadRenderer(Script::make()
+            ->src('/resources/js/framework.js')
+            ->defer()
+            ->type('module'));
+
+        // Add development tools script in development mode
+        if(MyFramework::isDevelopmentMode()) {
+            $this->addHeadRenderer(Script::make()
+                ->src('/resources/js/__dev/dev-tools.js')
+                ->type('module'));
+        }
+
+        // Load header and footer templates
+        $header = Template::loadTemplate('/partials/header');
+        $footer = Template::loadTemplate('/partials/footer');
+
+        // Combine header, content, and footer
+        $content = $header . parent::render() . $footer;
+
+        // Load and render the template
         return Template::loadTemplate('page', [
-            'lang' => $this->lang,
             'title' => $this->title,
             'description' => $this->description,
             'keywords' => $this->keywords,
             'author' => $this->author,
-            'content' => $this->content,
-            'top_body' => $this->getTopBody(),
-            'bottom_body' => $this->getBottomBody(),
+            'lang' => $this->lang,
+
+            'head_content' => RendererUtils::renders($this->head_renderers),
+            'content' => $content
         ]);
     }
 }

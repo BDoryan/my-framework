@@ -10,10 +10,10 @@
         <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Accueil</a>
+                    <a data-use-framework class="nav-link" href="/">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/profile">Profil</a>
+                    <a data-use-framework class="nav-link" href="/profile">Profil</a>
                 </li>
             </ul>
         </div>

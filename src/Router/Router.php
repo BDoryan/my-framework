@@ -50,6 +50,12 @@ class Router
 
     public function dispatch(?string $request_method = null, ?string $request_uri = null)
     {
+        if(empty($request_method))
+            $request_method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+
+        if(empty($request_uri))
+            $request_uri = ($_SERVER['REQUEST_URI'] ?: null) ?? '/';
+
         // Default to global server variables when explicit values are not provided.
         $request_method = $request_method ?? $_SERVER['REQUEST_METHOD'] ?? 'GET';
         $request_uri = $request_uri ?? ($_SERVER['REQUEST_URI'] ?? '/');
@@ -80,9 +86,20 @@ class Router
                 throw new \RuntimeException("Method {$method} not found on controller {$controller_class}.");
             }
             return call_user_func_array([$controller, $method], $route_params);
+        } else if(is_array($handler)) {
+            // Support the [ControllerClass::class, 'method'] notation
+            [$controller_class, $method] = $handler;
+            if (!class_exists($controller_class)) {
+                throw new \RuntimeException("Controller class {$controller_class} not found.");
+            }
+            $controller = new $controller_class();
+            if (!method_exists($controller, $method)) {
+                throw new \RuntimeException("Method {$method} not found on controller {$controller_class}.");
+            }
+            return call_user_func_array([$controller, $method], $route_params);
         }
 
-        throw new \RuntimeException('Invalid route handler.');
+        throw new \RuntimeException('Invalid route handler : ' . print_r($handler, true));
     }
 
     public function generate(string $route_name, array $params = []): string
