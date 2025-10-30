@@ -2,6 +2,13 @@
     <h2>Composant de test</h2>
     <p class="lead">Ceci est une page de test pour les composants réutilisables.</p>
 
+    <div class="row row-cols-3 mb-2">
+
+    <weather-widget city="Paris"></weather-widget>
+    <weather-widget city="Lyon"></weather-widget>
+    <weather-widget city="Marseille"></weather-widget>
+    </div>
+
     <task-dashboard title="Projet Micro-Framework"></task-dashboard>
 
     <div class="container py-5">
