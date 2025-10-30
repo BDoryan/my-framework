@@ -93,6 +93,10 @@ class Page extends Screen implements Renderer
         // Combine header, content, and footer
         $content = $header . parent::render() . $footer;
 
+        if(($_GET['_ajax'] ?? '') == 1) {
+            return $content;
+        }
+
         // Load and render the template
         return Template::loadTemplate('page', [
             'title' => $this->title,
@@ -102,6 +106,7 @@ class Page extends Screen implements Renderer
             'lang' => $this->lang,
 
             'head_content' => RendererUtils::renders($this->head_renderers),
+
             'content' => $content
         ]);
     }

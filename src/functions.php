@@ -37,6 +37,17 @@ function debug_print($data): void {
 }
 
 /**
+ * Merge multiple CSS class names into a single string.
+ *
+ * @param string ...$classes
+ * @return string
+ */
+function merge_classes(...$classes): string {
+    $filtered_classes = array_filter($classes, fn($class) => !empty($class));
+    return trim(implode(' ', $filtered_classes));
+}
+
+/**
  * Print debug information and terminate the script.
  *
  * @param mixed $data

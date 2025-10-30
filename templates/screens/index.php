@@ -9,3 +9,6 @@
         Second pane
     </h1>
 </div>
+<script>
+    alert('Bienvenue sur la page d’accueil !');
+</script>

@@ -143,6 +143,14 @@ class Router
         return null;
     }
 
+    public static function getRequestPath(): string
+    {
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '/';
+        $request_uri = explode('?', $request_uri, 2)[0];
+        $request_uri = $request_uri ?: '/';
+        return parse_url($request_uri, PHP_URL_PATH) ?: '/';
+    }
+
     private function pathToRegex(string $path): string
     {
         // Convert "/user/{id}" into a regex with named capture groups.
